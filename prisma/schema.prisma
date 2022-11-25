@@ -1,0 +1,182 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  document  String   @unique
+  phone     String
+  email     String   @unique
+  street    String
+  number    String
+  comp      String?
+  district  String
+  cep       String
+  city      String
+  password  String
+  state     String   @db.VarChar(2)
+  createdAt DateTime @default(now())
+  Orders    Orders[]
+
+  @@map("clients")
+}
+
+enum BannerOrigin {
+  index
+  products
+  catalog
+  cart
+  product
+  other
+}
+
+model Banners {
+  id        String   @id @default(cuid())
+  desktop   String
+  desktopId String
+  mobile    String?
+  mobileId  String?
+  redirect  String?
+  createdAt DateTime @default(now())
+
+  @@map("banners")
+}
+
+model Categories {
+  id          String     @id @default(cuid())
+  active      Boolean    @default(true)
+  name        String
+  description String
+  thumbnail   String?
+  thumbnailId String?
+  createdAt   DateTime   @default(now())
+  Products    Products[]
+
+  @@map("categories")
+}
+
+model Products {
+  id               String       @id @default(cuid())
+  categoryId       String
+  category         Categories   @relation(fields: [categoryId], references: [id])
+  active           Boolean      @default(true)
+  name             String
+  shortDescription String?
+  thumbnail        String?
+  thumbnailId      String?
+  description      String
+  price            Decimal      @db.Decimal(10, 2)
+  video            String?
+  createdAt        DateTime     @default(now())
+  Modeling         Modeling[]
+  SizeTables       SizeTables[]
+  Sizes            Sizes[]
+  Catalogs         Catalogs[]
+  OrderItems       OrderItems[]
+
+  @@map("products")
+}
+
+model Modeling {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Products @relation(fields: [productId], references: [id])
+  title       String
+  description String
+  image       String?
+  imageId     String?
+  createdAt   DateTime @default(now())
+
+  @@map("modelings")
+}
+
+model SizeTables {
+  id        String   @id @default(cuid())
+  productId String
+  product   Products @relation(fields: [productId], references: [id])
+  title     String
+  table     String?
+  tableId   String?
+  createdAt DateTime @default(now())
+
+  @@map("sizeTables")
+}
+
+model Sizes {
+  id         String       @id @default(cuid())
+  productId  String
+  product    Products     @relation(fields: [productId], references: [id])
+  size       String
+  createdAt  DateTime     @default(now())
+  OrderItems OrderItems[]
+
+  @@map("sizes")
+}
+
+model Catalogs {
+  id        String   @id @default(cuid())
+  productId String
+  product   Products @relation(fields: [productId], references: [id])
+  image     String
+  imageId   String
+  createdAt DateTime @default(now())
+
+  @@map("catalogs")
+}
+
+enum OrderStatus {
+  payment
+  design
+  production
+  packing
+  shipping
+  finish
+}
+
+enum PaymentStatus {
+  waiting
+  paidOut
+  refused
+  cancel
+}
+
+model Orders {
+  id                  String        @id @default(cuid())
+  clientId            String
+  client              Client        @relation(fields: [clientId], references: [id])
+  orderStatus         OrderStatus
+  paymentStatus       PaymentStatus
+  checkoutId          String?
+  observation         String?
+  shippingCode        String?
+  shippingInformation String?
+  total               Decimal       @db.Decimal(10, 2)
+  createdAt           DateTime      @default(now())
+  OrderItems          OrderItems[]
+
+  @@map("orders")
+}
+
+model OrderItems {
+  id        String   @id @default(cuid())
+  productId String
+  product   Products @relation(fields: [productId], references: [id])
+  orderId   String
+  order     Orders   @relation(fields: [orderId], references: [id])
+  sizeId    String
+  size      Sizes    @relation(fields: [sizeId], references: [id])
+  quantity  Int
+  total     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+
+  @@map("orderItems")
+}
