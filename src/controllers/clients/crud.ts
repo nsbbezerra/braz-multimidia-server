@@ -90,6 +90,17 @@ class ClientsCRUD {
       next(error);
     }
   }
+
+  async Show(req: Request, res: Response, next: NextFunction) {
+    try {
+      const clients = await prisma.client.findMany({
+        orderBy: { name: "asc" },
+      });
+      return res.status(200).json(clients);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ClientsCRUD();

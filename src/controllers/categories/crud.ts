@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import { prisma } from "../../database";
 import { CategoryStoreProps } from "../../types";
 import { bucket } from "../../services/upload";
@@ -6,6 +6,16 @@ import { bucket } from "../../services/upload";
 interface CustomProp extends Request {
   firebaseUrl?: string;
   firebaseId?: string;
+}
+
+async function SaveThumbnail(url: string, id: string, fileId: string) {
+  await prisma.categories.update({
+    where: { id },
+    data: {
+      thumbnail: url,
+      thumbnailId: fileId,
+    },
+  });
 }
 
 class CategoriesCRUD {
@@ -17,13 +27,16 @@ class CategoriesCRUD {
     const { name, description } = req.body;
 
     try {
-      await prisma.categories.create({
+      const category = await prisma.categories.create({
         data: {
           name,
           description: description || "",
         },
       });
-      return res.status(201).json({ message: "Categoria salva com sucesso" });
+      const id = category.id;
+      return res
+        .status(201)
+        .json({ message: "Categoria salva com sucesso", id });
     } catch (error) {
       next(error);
     }
@@ -103,17 +116,29 @@ class CategoriesCRUD {
         where: { id },
       });
 
-      await bucket.file(category?.thumbnailId as string).delete();
+      const deleteFile = bucket.file(category?.thumbnailId as string).delete();
 
-      await prisma.categories.update({
-        where: { id },
-        data: {
-          thumbnail: firebaseUrl,
-          thumbnailId: firebaseId,
-        },
+      deleteFile
+        .then(() => {
+          SaveThumbnail(String(firebaseUrl), id, String(firebaseId));
+          return res
+            .status(201)
+            .json({ message: "Imagem atualizada com sucesso" });
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async Show(req: Request, res: Response, next: NextFunction) {
+    try {
+      const categories = await prisma.categories.findMany({
+        orderBy: { name: "desc" },
       });
-
-      return res.status(201).json({ message: "Imagem atualizada com sucesso" });
+      return res.status(200).json(categories);
     } catch (error) {
       next(error);
     }

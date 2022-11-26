@@ -29,4 +29,19 @@ interface CategoryStoreProps {
   description?: string;
 }
 
-export type { ClientProps, LoginProps, UploaderProps, CategoryStoreProps };
+interface CreateProductsProps {
+  categoryId: string;
+  name: string;
+  shortDescription?: string;
+  description: string;
+  price: number;
+  video?: string;
+}
+
+export type {
+  ClientProps,
+  LoginProps,
+  UploaderProps,
+  CategoryStoreProps,
+  CreateProductsProps,
+};

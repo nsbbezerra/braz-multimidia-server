@@ -40,13 +40,14 @@ enum BannerOrigin {
 }
 
 model Banners {
-  id        String   @id @default(cuid())
-  desktop   String
-  desktopId String
+  id        String       @id @default(cuid())
+  desktop   String?
+  desktopId String?
   mobile    String?
   mobileId  String?
   redirect  String?
-  createdAt DateTime @default(now())
+  origin    BannerOrigin
+  createdAt DateTime     @default(now())
 
   @@map("banners")
 }

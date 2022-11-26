@@ -1,10 +1,12 @@
 import express from "express";
 import multer from "multer";
+import { upload } from "./services/upload";
 
 import ClientCRUDController from "./controllers/clients/crud";
 import LoginController from "./controllers/clients/login";
 import CategoriesCRUDController from "./controllers/categories/crud";
-import { upload } from "./services/upload";
+import BannerCRUDController from "./controllers/banners/crud";
+import ProductsCRUDController from "./controllers/products/crud";
 
 const Multer = multer({
   storage: multer.memoryStorage(),
@@ -12,10 +14,15 @@ const Multer = multer({
 
 const router = express.Router();
 
+/** CLIENTS */
+
 router.post("/clients", ClientCRUDController.Create);
 router.put("/clients/:clientId", ClientCRUDController.Update);
+router.get("/clients", ClientCRUDController.Show);
 router.post("/login", LoginController.Login);
 router.put("/updatePassword", LoginController.RequestUpdatePassword);
+
+/** CATEGORIES */
 
 router.post("/categories", CategoriesCRUDController.Create);
 router.put(
@@ -31,6 +38,55 @@ router.put(
   Multer.single("thumbnail"),
   upload,
   CategoriesCRUDController.UpdateThumbnail
+);
+router.get("/categories", CategoriesCRUDController.Show);
+
+/** BANNERS */
+router.get("/banners/:origin", BannerCRUDController.Show);
+router.post(
+  "/banners/desktop",
+  Multer.single("thumbnail"),
+  upload,
+  BannerCRUDController.CreateDesktop
+);
+router.post(
+  "/banners/mobile/:id",
+  Multer.single("thumbnail"),
+  upload,
+  BannerCRUDController.CreateMobile
+);
+router.put(
+  "/banners/desktop/:id",
+  Multer.single("thumbnail"),
+  upload,
+  BannerCRUDController.UpdateDesktop
+);
+router.put(
+  "/banners/mobile/:id",
+  Multer.single("thumbnail"),
+  upload,
+  BannerCRUDController.UpdateMobile
+);
+router.get("/banners/:origin", BannerCRUDController.Show);
+router.put("/banners/redirect/:id", BannerCRUDController.UpdateRedirect);
+
+/** PRODUCTS */
+
+router.get("/products", ProductsCRUDController.Show);
+router.post("/products", ProductsCRUDController.Create);
+router.put("/products/active/:id", ProductsCRUDController.Active);
+router.put("/products/update/:id", ProductsCRUDController.Update);
+router.put(
+  "/products/thumbnail/:id",
+  Multer.single("thumbnail"),
+  upload,
+  ProductsCRUDController.Thumbnail
+);
+router.put(
+  "/products/updateThumbnail/:id",
+  Multer.single("thumbnail"),
+  upload,
+  ProductsCRUDController.UpdateThumbnail
 );
 
 export { router };
