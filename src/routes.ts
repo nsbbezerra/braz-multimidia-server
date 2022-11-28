@@ -7,6 +7,7 @@ import LoginController from "./controllers/clients/login";
 import CategoriesCRUDController from "./controllers/categories/crud";
 import BannerCRUDController from "./controllers/banners/crud";
 import ProductsCRUDController from "./controllers/products/crud";
+import ModelingCRUDController from "./controllers/modeling/crud";
 
 const Multer = multer({
   storage: multer.memoryStorage(),
@@ -88,5 +89,23 @@ router.put(
   upload,
   ProductsCRUDController.UpdateThumbnail
 );
+
+/** MODELINGS */
+
+router.post(
+  "/modeling/:id",
+  Multer.single("thumbnail"),
+  upload,
+  ModelingCRUDController.Create
+);
+router.put(
+  "/modeling/updateThumbnail/:id",
+  Multer.single("thumbnail"),
+  upload,
+  ModelingCRUDController.UpdateThumbnail
+);
+router.delete("/modeling/:id", ModelingCRUDController.Delete);
+router.put("/modeling/updateInfo/:id", ModelingCRUDController.UpdateInfo);
+router.get("/modeling/:productId", ModelingCRUDController.Find);
 
 export { router };

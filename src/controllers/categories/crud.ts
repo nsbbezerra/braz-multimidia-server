@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../database";
 import { CategoryStoreProps } from "../../types";
 import { bucket } from "../../services/upload";

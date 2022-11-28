@@ -13,14 +13,13 @@ CREATE TABLE "clients" (
     "name" TEXT NOT NULL,
     "document" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
-    "email" TEXT,
+    "email" TEXT NOT NULL,
     "street" TEXT NOT NULL,
     "number" TEXT NOT NULL,
     "comp" TEXT,
     "district" TEXT NOT NULL,
     "cep" TEXT NOT NULL,
     "city" TEXT NOT NULL,
-    "user" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "state" VARCHAR(2) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -31,11 +30,12 @@ CREATE TABLE "clients" (
 -- CreateTable
 CREATE TABLE "banners" (
     "id" TEXT NOT NULL,
-    "desktop" TEXT NOT NULL,
-    "desktopId" TEXT NOT NULL,
+    "desktop" TEXT,
+    "desktopId" TEXT,
     "mobile" TEXT,
     "mobileId" TEXT,
     "redirect" TEXT,
+    "origin" "BannerOrigin" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "banners_pkey" PRIMARY KEY ("id")
@@ -47,8 +47,8 @@ CREATE TABLE "categories" (
     "active" BOOLEAN NOT NULL DEFAULT true,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "thumbnail" TEXT NOT NULL,
-    "thumbnailId" TEXT NOT NULL,
+    "thumbnail" TEXT,
+    "thumbnailId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
@@ -61,6 +61,8 @@ CREATE TABLE "products" (
     "active" BOOLEAN NOT NULL DEFAULT true,
     "name" TEXT NOT NULL,
     "shortDescription" TEXT,
+    "thumbnail" TEXT,
+    "thumbnailId" TEXT,
     "description" TEXT NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
     "video" TEXT,
@@ -75,8 +77,8 @@ CREATE TABLE "modelings" (
     "productId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
-    "imageId" TEXT NOT NULL,
+    "image" TEXT,
+    "imageId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "modelings_pkey" PRIMARY KEY ("id")
@@ -87,8 +89,8 @@ CREATE TABLE "sizeTables" (
     "id" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "table" TEXT NOT NULL,
-    "tableId" TEXT NOT NULL,
+    "table" TEXT,
+    "tableId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "sizeTables_pkey" PRIMARY KEY ("id")
@@ -148,7 +150,7 @@ CREATE TABLE "orderItems" (
 CREATE UNIQUE INDEX "clients_document_key" ON "clients"("document");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "clients_user_key" ON "clients"("user");
+CREATE UNIQUE INDEX "clients_email_key" ON "clients"("email");
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
