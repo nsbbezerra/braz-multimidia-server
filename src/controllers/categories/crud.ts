@@ -116,6 +116,13 @@ class CategoriesCRUD {
         where: { id },
       });
 
+      if (!category?.thumbnailId) {
+        SaveThumbnail(String(firebaseUrl), id, String(firebaseId));
+        return res
+          .status(201)
+          .json({ message: "Imagem atualizada com sucesso" });
+      }
+
       const deleteFile = bucket.file(category?.thumbnailId as string).delete();
 
       deleteFile
@@ -136,7 +143,7 @@ class CategoriesCRUD {
   async Show(req: Request, res: Response, next: NextFunction) {
     try {
       const categories = await prisma.categories.findMany({
-        orderBy: { name: "desc" },
+        orderBy: { name: "asc" },
       });
       return res.status(200).json(categories);
     } catch (error) {
