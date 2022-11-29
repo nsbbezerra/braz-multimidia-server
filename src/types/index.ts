@@ -38,10 +38,15 @@ interface CreateProductsProps {
   video?: string;
 }
 
+interface SizesProps {
+  size: string;
+}
+
 export type {
   ClientProps,
   LoginProps,
   UploaderProps,
   CategoryStoreProps,
   CreateProductsProps,
+  SizesProps,
 };

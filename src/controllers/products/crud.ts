@@ -28,7 +28,7 @@ class ProductsCRUD {
       req.body;
 
     try {
-      await prisma.products.create({
+      const product = await prisma.products.create({
         data: {
           categoryId,
           description,
@@ -38,9 +38,10 @@ class ProductsCRUD {
           video,
         },
       });
+      const id = product.id;
       return res
         .status(201)
-        .json({ message: "Produto cadastrado com sucesso" });
+        .json({ message: "Produto cadastrado com sucesso", id });
     } catch (error) {
       next(error);
     }

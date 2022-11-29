@@ -9,6 +9,8 @@ import BannerCRUDController from "./controllers/banners/crud";
 import ProductsCRUDController from "./controllers/products/crud";
 import ModelingCRUDController from "./controllers/modeling/crud";
 import TablesCRUDController from "./controllers/tables/crud";
+import CatalogsCRUDController from "./controllers/catalogs/crud";
+import SizesCRUDController from "./controllers/sizes/crud";
 
 const Multer = multer({
   storage: multer.memoryStorage(),
@@ -126,5 +128,23 @@ router.put(
 );
 router.put("/tables/title/:id", TablesCRUDController.UpdateTitle);
 router.delete("/tables/:id", TablesCRUDController.Delete);
+
+/** CATALOGS */
+
+router.get("/catalogs/:productId", CatalogsCRUDController.Find);
+router.post(
+  "/catalogs/:id",
+  Multer.single("thumbnail"),
+  upload,
+  CatalogsCRUDController.Create
+);
+router.delete("/catalogs/:id", CatalogsCRUDController.Delete);
+
+/** SIZES */
+
+router.get("/sizes/:productId", SizesCRUDController.Find);
+router.post("/sizes/:producId", SizesCRUDController.Create);
+router.put("/sizes/:id", SizesCRUDController.Update);
+router.delete("/sizes/:id", SizesCRUDController.Delete);
 
 export { router };
