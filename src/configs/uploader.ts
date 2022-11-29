@@ -1,4 +1,4 @@
 const uploader = {};
-const storageBucket = "gs://ecommerce-18d83.appspot.com";
+const storageBucket = "gs://pa-rifas.appspot.com";
 
 export { uploader, storageBucket };

@@ -26,7 +26,7 @@ class ClientLogin {
       }
       const client = {
         name: findClient.name,
-        document: findClient.name,
+        document: findClient.document,
         phone: findClient.phone,
         email: findClient.email,
         street: findClient.street,

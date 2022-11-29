@@ -95,6 +95,20 @@ class ClientsCRUD {
     try {
       const clients = await prisma.client.findMany({
         orderBy: { name: "asc" },
+        select: {
+          name: true,
+          cep: true,
+          city: true,
+          comp: true,
+          district: true,
+          document: true,
+          email: true,
+          id: true,
+          number: true,
+          phone: true,
+          state: true,
+          street: true,
+        },
       });
       return res.status(200).json(clients);
     } catch (error) {
