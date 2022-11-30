@@ -96,6 +96,11 @@ class ProductsCRUD {
         where: { id },
       });
 
+      if (!product?.thumbnailId) {
+        SaveThumbnail(id, String(firebaseUrl), String(firebaseId));
+        return res.status(201).json({ message: "Imagem alterada com sucesso" });
+      }
+
       const deleteFile = bucket.file(product?.thumbnailId as string).delete();
 
       deleteFile
@@ -132,7 +137,26 @@ class ProductsCRUD {
   }
   async Show(req: Request, res: Response, next: NextFunction) {
     try {
-      const products = await prisma.products.findMany();
+      const products = await prisma.products.findMany({
+        select: {
+          name: true,
+          id: true,
+          shortDescription: true,
+          description: true,
+          price: true,
+          thumbnail: true,
+          thumbnailId: true,
+          active: true,
+          video: true,
+          category: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+        orderBy: { name: "asc" },
+      });
       return res.status(200).json(products);
     } catch (error) {
       next(error);
