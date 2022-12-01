@@ -104,7 +104,6 @@ model SizeTables {
   id        String   @id @default(cuid())
   productId String
   product   Products @relation(fields: [productId], references: [id])
-  title     String
   table     String?
   tableId   String?
   createdAt DateTime @default(now())

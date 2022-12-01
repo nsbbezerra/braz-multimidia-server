@@ -121,13 +121,6 @@ router.post(
   upload,
   TablesCRUDController.Create
 );
-router.put(
-  "/tables/thumbnail/:id",
-  Multer.single("thumbnail"),
-  upload,
-  TablesCRUDController.UpdateThumbnail
-);
-router.put("/tables/title/:id", TablesCRUDController.UpdateTitle);
 router.delete("/tables/:id", TablesCRUDController.Delete);
 
 /** CATALOGS */
