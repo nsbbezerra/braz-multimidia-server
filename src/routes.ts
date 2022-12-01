@@ -11,6 +11,7 @@ import ModelingCRUDController from "./controllers/modeling/crud";
 import TablesCRUDController from "./controllers/tables/crud";
 import CatalogsCRUDController from "./controllers/catalogs/crud";
 import SizesCRUDController from "./controllers/sizes/crud";
+import DashboardSizePageFinderController from "./controllers/dashboard/sizesPage";
 
 const Multer = multer({
   storage: multer.memoryStorage(),
@@ -143,8 +144,15 @@ router.delete("/catalogs/:id", CatalogsCRUDController.Delete);
 /** SIZES */
 
 router.get("/sizes/:productId", SizesCRUDController.Find);
-router.post("/sizes/:producId", SizesCRUDController.Create);
+router.post("/sizes/:productId", SizesCRUDController.Create);
 router.put("/sizes/:id", SizesCRUDController.Update);
 router.delete("/sizes/:id", SizesCRUDController.Delete);
+
+/** DASHBOARD */
+
+router.get(
+  "/findCategoriesWithProducts",
+  DashboardSizePageFinderController.FindCategoriesAndProducts
+);
 
 export { router };
