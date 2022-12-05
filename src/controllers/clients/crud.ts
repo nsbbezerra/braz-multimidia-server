@@ -25,6 +25,27 @@ class ClientsCRUD {
     } = req.body;
     try {
       const hash = await bcrypt.hash(password, 10);
+
+      const findForDocument = await prisma.client.findFirst({
+        where: { document },
+      });
+
+      if (findForDocument) {
+        return res
+          .status(400)
+          .json({ message: "Este documento já foi cadastrado" });
+      }
+
+      const findForEmail = await prisma.client.findFirst({
+        where: { email },
+      });
+
+      if (findForEmail) {
+        return res
+          .status(400)
+          .json({ message: "Este email já foi cadastrado" });
+      }
+
       await prisma.client.create({
         data: {
           cep,
