@@ -12,6 +12,9 @@ import TablesCRUDController from "./controllers/tables/crud";
 import CatalogsCRUDController from "./controllers/catalogs/crud";
 import SizesCRUDController from "./controllers/sizes/crud";
 import DashboardSizePageFinderController from "./controllers/dashboard/sizesPage";
+import IndexPageController from "./controllers/site/indexPage";
+import CategoriesPageController from "./controllers/site/categoriesPage";
+import ProductPageController from "./controllers/site/productPage";
 
 const Multer = multer({
   storage: multer.memoryStorage(),
@@ -129,5 +132,17 @@ router.get(
   "/findCategoriesWithProducts",
   DashboardSizePageFinderController.FindCategoriesAndProducts
 );
+
+/** SITE PAGES */
+
+router.get("/fromIndexPage", IndexPageController.Find);
+router.get(
+  "/findProductsAndCategories",
+  IndexPageController.FindCategoriesAndProducts
+);
+router.get("/fromCategoriesPage/:id", CategoriesPageController.Find);
+router.get("/fromCategoriesPagePaths", CategoriesPageController.FindCategories);
+router.get("/fromProductPagePaths", ProductPageController.FindProductPath);
+router.get("/fromProductPage/:id", ProductPageController.FindProduct);
 
 export { router };
