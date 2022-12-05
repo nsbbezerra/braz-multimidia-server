@@ -49,31 +49,13 @@ router.get("/categories", CategoriesCRUDController.Show);
 /** BANNERS */
 router.get("/banners/:origin", BannerCRUDController.Show);
 router.post(
-  "/banners/desktop",
+  "/banners",
   Multer.single("thumbnail"),
   upload,
-  BannerCRUDController.CreateDesktop
+  BannerCRUDController.CreateBanner
 );
-router.post(
-  "/banners/mobile/:id",
-  Multer.single("thumbnail"),
-  upload,
-  BannerCRUDController.CreateMobile
-);
-router.put(
-  "/banners/desktop/:id",
-  Multer.single("thumbnail"),
-  upload,
-  BannerCRUDController.UpdateDesktop
-);
-router.put(
-  "/banners/mobile/:id",
-  Multer.single("thumbnail"),
-  upload,
-  BannerCRUDController.UpdateMobile
-);
-router.get("/banners/:origin", BannerCRUDController.Show);
 router.put("/banners/redirect/:id", BannerCRUDController.UpdateRedirect);
+router.delete("/banners/:id", BannerCRUDController.Delete);
 
 /** PRODUCTS */
 

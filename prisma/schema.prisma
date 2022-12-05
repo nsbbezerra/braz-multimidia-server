@@ -41,10 +41,8 @@ enum BannerOrigin {
 
 model Banners {
   id        String       @id @default(cuid())
-  desktop   String?
-  desktopId String?
-  mobile    String?
-  mobileId  String?
+  banner    String?
+  bannerId  String?
   redirect  String?
   origin    BannerOrigin
   createdAt DateTime     @default(now())

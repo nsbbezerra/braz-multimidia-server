@@ -1,5 +1,5 @@
 import { BannerOrigin } from "@prisma/client";
-import e, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { prisma } from "../../database/index";
 import { bucket } from "../../services/upload";
 
@@ -8,28 +8,14 @@ interface CustomProp extends Request {
   firebaseId?: string;
 }
 
-async function SaveDesktop(id: string, fileUrl: string, fileId: string) {
-  await prisma.banners.update({
+async function DeleteBanner(id: string) {
+  await prisma.banners.delete({
     where: { id },
-    data: {
-      desktop: fileUrl,
-      desktopId: fileId,
-    },
-  });
-}
-
-async function SaveMobile(id: string, fileUrl: string, fileId: string) {
-  await prisma.banners.update({
-    where: { id },
-    data: {
-      mobile: fileUrl,
-      mobileId: fileId,
-    },
   });
 }
 
 class BannersCRUD {
-  async CreateDesktop(req: CustomProp, res: Response, next: NextFunction) {
+  async CreateBanner(req: CustomProp, res: Response, next: NextFunction) {
     const { firebaseUrl, firebaseId } = req;
     const { origin, redirect } = req.body;
 
@@ -38,79 +24,11 @@ class BannersCRUD {
         data: {
           origin,
           redirect,
-          desktop: firebaseUrl as string,
-          desktopId: firebaseId as string,
+          banner: firebaseUrl as string,
+          bannerId: firebaseId as string,
         },
       });
       return res.status(201).json({ message: "Imagem inserida com sucesso" });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async CreateMobile(req: CustomProp, res: Response, next: NextFunction) {
-    const { firebaseUrl, firebaseId } = req;
-    const { id } = req.params;
-
-    try {
-      await prisma.banners.update({
-        where: { id },
-        data: {
-          mobile: firebaseUrl as string,
-          mobileId: firebaseId as string,
-        },
-      });
-      return res.status(201).json({ message: "Imagem inserida com sucesso" });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async UpdateDesktop(req: CustomProp, res: Response, next: NextFunction) {
-    const { firebaseId, firebaseUrl } = req;
-    const { id } = req.params;
-
-    try {
-      const banner = await prisma.banners.findFirst({
-        where: { id },
-      });
-      const deleteFile = bucket.file(banner?.desktopId as string).delete();
-
-      deleteFile
-        .then(() => {
-          SaveDesktop(id, String(firebaseUrl), String(firebaseId));
-          return res
-            .status(201)
-            .json({ message: "Imagem alterada com sucesso" });
-        })
-        .catch((err) => {
-          next(err);
-        });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async UpdateMobile(req: CustomProp, res: Response, next: NextFunction) {
-    const { firebaseId, firebaseUrl } = req;
-    const { id } = req.params;
-
-    try {
-      const banner = await prisma.banners.findFirst({
-        where: { id },
-      });
-      const deleteFile = bucket.file(banner?.mobileId as string).delete();
-
-      deleteFile
-        .then(() => {
-          SaveMobile(id, String(firebaseUrl), String(firebaseId));
-          return res
-            .status(201)
-            .json({ message: "Imagem alterada com sucesso" });
-        })
-        .catch((err) => {
-          next(err);
-        });
     } catch (error) {
       next(error);
     }
@@ -118,10 +36,9 @@ class BannersCRUD {
 
   async Show(req: Request, res: Response, next: NextFunction) {
     const { origin } = req.params;
-
     try {
-      const banner = await prisma.banners.findFirst({
-        where: { origin: { equals: origin as BannerOrigin } },
+      const banner = await prisma.banners.findMany({
+        where: { origin: origin as BannerOrigin },
       });
       return res.status(200).json(banner);
     } catch (error) {
@@ -143,6 +60,31 @@ class BannersCRUD {
       return res
         .status(201)
         .json({ message: "Informação inserida com sucesso" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async Delete(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const findBanner = await prisma.banners.findFirst({
+        where: { id },
+      });
+
+      const deleteFile = bucket.file(String(findBanner?.bannerId)).delete();
+
+      deleteFile
+        .then(() => {
+          DeleteBanner(id);
+          return res
+            .status(201)
+            .json({ message: "Banner removido com sucesso" });
+        })
+        .catch((err) => {
+          next(err);
+        });
     } catch (error) {
       next(error);
     }
