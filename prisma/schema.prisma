@@ -75,6 +75,7 @@ model Products {
   description      String
   price            Decimal      @db.Decimal(10, 2)
   video            String?
+  request          Int          @default(0)
   createdAt        DateTime     @default(now())
   Modeling         Modeling[]
   SizeTables       SizeTables[]

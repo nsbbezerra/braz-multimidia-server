@@ -11,8 +11,12 @@ class IndexPage {
         where: { active: true },
         orderBy: { name: "asc" },
       });
-
-      return res.status(200).json({ banners, categories });
+      const products = await prisma.products.findMany({
+        where: { active: true },
+        orderBy: { request: "desc" },
+        take: 12,
+      });
+      return res.status(200).json({ banners, categories, products });
     } catch (error) {
       next(error);
     }
@@ -34,6 +38,28 @@ class IndexPage {
       });
 
       return res.status(200).json({ products, categories });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async FindOtherBanners(req: Request, res: Response, next: NextFunction) {
+    try {
+      const banner = await prisma.banners.findFirst({
+        where: { origin: "other" },
+      });
+      return res.status(201).json(banner);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async FindCartBanner(req: Request, res: Response, next: NextFunction) {
+    try {
+      const banner = await prisma.banners.findFirst({
+        where: { origin: "cart" },
+      });
+      return res.status(200).json(banner);
     } catch (error) {
       next(error);
     }

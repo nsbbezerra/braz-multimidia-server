@@ -140,9 +140,12 @@ router.get(
   "/findProductsAndCategories",
   IndexPageController.FindCategoriesAndProducts
 );
+router.get("/fromOthersPageBanner", IndexPageController.FindOtherBanners);
 router.get("/fromCategoriesPage/:id", CategoriesPageController.Find);
 router.get("/fromCategoriesPagePaths", CategoriesPageController.FindCategories);
 router.get("/fromProductPagePaths", ProductPageController.FindProductPath);
 router.get("/fromProductPage/:id", ProductPageController.FindProduct);
+router.get("/findCatalogOfProducts/:id", ProductPageController.FindCatalog);
+router.get("/fromCartPageBanner", IndexPageController.FindCartBanner);
 
 export { router };
