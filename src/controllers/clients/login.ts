@@ -25,6 +25,7 @@ class ClientLogin {
         return res.status(400).json({ message: "Senha incorreta" });
       }
       const client = {
+        id: findClient.id,
         name: findClient.name,
         document: findClient.document,
         phone: findClient.phone,
