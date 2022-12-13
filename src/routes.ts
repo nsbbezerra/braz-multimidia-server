@@ -153,5 +153,6 @@ router.get("/fromCartPageBanner", IndexPageController.FindCartBanner);
 
 router.post("/order", OrdersController.Create);
 router.get("/order/:id", OrdersController.FindOrder);
+router.get("/orders/:search/:value", OrdersController.Search);
 
 export { router };

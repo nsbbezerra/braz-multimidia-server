@@ -162,11 +162,166 @@ class OrdersController {
         const payment = await stripe.checkout.sessions.retrieve(
           String(order?.checkoutId)
         );
-        console.log({ payment });
         const status = payment.payment_status;
         paymentStatus = status;
       }
       return res.status(201).json({ order, paymentStatus });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async Search(req: Request, res: Response, next: NextFunction) {
+    const { search, value } = req.params;
+    try {
+      if (search === "all") {
+        const orders = await prisma.orders.findMany({
+          orderBy: { createdAt: "desc" },
+          select: {
+            checkoutId: true,
+            createdAt: true,
+            client: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            id: true,
+            observation: true,
+            OrderItems: {
+              select: {
+                id: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                    price: true,
+                    thumbnail: true,
+                    category: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+                quantity: true,
+                size: {
+                  select: {
+                    size: true,
+                  },
+                },
+                total: true,
+              },
+            },
+            orderStatus: true,
+            paymentStatus: true,
+            shippingCode: true,
+            shippingInformation: true,
+            total: true,
+          },
+        });
+
+        return res.status(200).json(orders);
+      }
+      if (search === "client") {
+        const orders = await prisma.orders.findMany({
+          where: { clientId: value },
+          orderBy: { createdAt: "desc" },
+          select: {
+            checkoutId: true,
+            createdAt: true,
+            client: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            id: true,
+            observation: true,
+            OrderItems: {
+              select: {
+                id: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                    price: true,
+                    thumbnail: true,
+                    category: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+                quantity: true,
+                size: {
+                  select: {
+                    size: true,
+                  },
+                },
+                total: true,
+              },
+            },
+            orderStatus: true,
+            paymentStatus: true,
+            shippingCode: true,
+            shippingInformation: true,
+            total: true,
+          },
+        });
+
+        return res.status(200).json(orders);
+      }
+      if (search === "id") {
+        const orders = await prisma.orders.findMany({
+          where: { id: value },
+          select: {
+            checkoutId: true,
+            createdAt: true,
+            client: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            id: true,
+            observation: true,
+            OrderItems: {
+              select: {
+                id: true,
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                    price: true,
+                    thumbnail: true,
+                    category: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+                quantity: true,
+                size: {
+                  select: {
+                    size: true,
+                  },
+                },
+                total: true,
+              },
+            },
+            orderStatus: true,
+            paymentStatus: true,
+            shippingCode: true,
+            shippingInformation: true,
+            total: true,
+          },
+        });
+
+        return res.status(200).json(orders);
+      }
     } catch (error) {
       next(error);
     }
