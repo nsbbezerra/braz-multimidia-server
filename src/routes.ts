@@ -16,6 +16,7 @@ import IndexPageController from "./controllers/site/indexPage";
 import CategoriesPageController from "./controllers/site/categoriesPage";
 import ProductPageController from "./controllers/site/productPage";
 import OrdersController from "./controllers/orders/crud";
+import PrinterController from "./controllers/print/print";
 
 const Multer = multer({
   storage: multer.memoryStorage(),
@@ -160,5 +161,7 @@ router.get(
   "/order/payment/:checkoutId/:order",
   OrdersController.FindPaymentInfo
 );
+
+router.get("/print/:id", PrinterController.Generate);
 
 export { router };
