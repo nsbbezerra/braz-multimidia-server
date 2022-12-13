@@ -154,5 +154,11 @@ router.get("/fromCartPageBanner", IndexPageController.FindCartBanner);
 router.post("/order", OrdersController.Create);
 router.get("/order/:id", OrdersController.FindOrder);
 router.get("/orders/:search/:value", OrdersController.Search);
+router.put("/orders/shipping/:id", OrdersController.UpdateShipping);
+router.put("/orders/status/:id", OrdersController.UpdateStatus);
+router.get(
+  "/order/payment/:checkoutId/:order",
+  OrdersController.FindPaymentInfo
+);
 
 export { router };

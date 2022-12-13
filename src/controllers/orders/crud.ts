@@ -326,6 +326,107 @@ class OrdersController {
       next(error);
     }
   }
+
+  async UpdateShipping(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { shippingCode, shippingInformation } = req.body;
+
+    try {
+      await prisma.orders.update({
+        where: { id },
+        data: {
+          shippingCode,
+          shippingInformation,
+        },
+      });
+      return res
+        .status(201)
+        .json({ message: "Alterações concluídas com sucesso" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async UpdateStatus(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { orderStatus, paymentStatus } = req.body;
+
+    try {
+      if (orderStatus === "payment") {
+        await prisma.orders.update({
+          where: { id },
+          data: {
+            orderStatus,
+            paymentStatus,
+          },
+        });
+        return res
+          .status(201)
+          .json({ message: "Informações alteradas com sucesso" });
+      } else {
+        await prisma.orders.update({
+          where: { id },
+          data: {
+            orderStatus,
+          },
+        });
+        return res
+          .status(201)
+          .json({ message: "Informações alteradas com sucesso" });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async FindPaymentInfo(req: Request, res: Response, next: NextFunction) {
+    const { checkoutId, order } = req.params;
+
+    try {
+      const checkout = await stripe.checkout.sessions.retrieve(
+        String(checkoutId)
+      );
+      const payment = await stripe.paymentIntents.retrieve(
+        String(checkout.payment_intent)
+      );
+
+      if (checkout.payment_status === "no_payment_required") {
+        await prisma.orders.update({
+          where: { id: order },
+          data: {
+            paymentStatus: "cancel",
+          },
+        });
+      }
+
+      if (checkout.payment_status === "paid") {
+        await prisma.orders.update({
+          where: { id: order },
+          data: {
+            paymentStatus: "paidOut",
+          },
+        });
+      }
+
+      if (checkout.payment_status === "unpaid") {
+        await prisma.orders.update({
+          where: { id: order },
+          data: {
+            paymentStatus: "waiting",
+          },
+        });
+      }
+
+      let info = {
+        status: checkout.payment_status,
+        method: payment.payment_method_types,
+      };
+
+      return res.status(200).json(info);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new OrdersController();
