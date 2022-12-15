@@ -390,6 +390,8 @@ class OrdersController {
         String(checkout.payment_intent)
       );
 
+      console.log(payment);
+
       if (checkout.payment_status === "no_payment_required") {
         await prisma.orders.update({
           where: { id: order },

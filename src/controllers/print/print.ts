@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../../database";
+import PDFPrinter from "pdfmake";
 
 function formateDate(date: Date) {
   const initialDate = new Date(date);
